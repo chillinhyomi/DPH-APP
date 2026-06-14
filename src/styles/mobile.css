@@ -1,0 +1,327 @@
+/* ============================================
+   DPH Mobile Responsive Styles
+   Global mobile utilities and fixes
+   ============================================ */
+
+/* Prevent horizontal scroll on all pages */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Mobile breakpoints:
+   - 1024px: Tablets
+   - 768px: Mobile landscape / small tablets
+   - 480px: Mobile portrait
+*/
+
+/* ============================================
+   TABLET & LARGE MOBILE (max-width: 1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+  /* Reduce padding on headers */
+  header {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  /* Grid adjustments */
+  [style*="gridTemplateColumns"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ============================================
+   MOBILE (max-width: 768px)
+   ============================================ */
+@media (max-width: 768px) {
+  /* Prevent mobile menu overlap - add space for hamburger button */
+  header:first-child {
+    margin-top: 60px;
+  }
+
+  /* Typography scale down */
+  h1 {
+    font-size: clamp(20px, 5vw, 26px) !important;
+  }
+
+  h2 {
+    font-size: clamp(18px, 4.5vw, 22px) !important;
+  }
+
+  h3 {
+    font-size: clamp(16px, 4vw, 18px) !important;
+  }
+
+  /* Reduce padding globally */
+  header, footer {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  section {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* Stack grids */
+  [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Flex direction column for complex layouts */
+  .content-grid,
+  .two-col-layout,
+  .split-layout {
+    flex-direction: column !important;
+  }
+
+  /* Button groups */
+  [style*="gap: 12px"],
+  [style*="gap: 14px"],
+  [style*="gap: 16px"] {
+    flex-wrap: wrap !important;
+  }
+
+  /* Modal adjustments */
+  [style*="position: fixed"][style*="inset: 0"] > div {
+    max-width: calc(100% - 32px) !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Forms and inputs stay full width */
+  input, textarea, select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Tables scroll horizontally */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Cards stack vertically */
+  .card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hide decorative elements on mobile */
+  .hide-mobile {
+    display: none !important;
+  }
+
+  /* Workspace panels */
+  .workspace-member-panel,
+  .workspace-property-panel {
+    width: 280px !important;
+    max-width: 80vw !important;
+  }
+
+  /* Formation panel scrolls */
+  .formation-panel {
+    height: 160px !important;
+  }
+
+  /* Navigation adjustments */
+  nav[style*="gap: 32px"] {
+    gap: 12px !important;
+  }
+
+  /* Reduce button padding on mobile */
+  button {
+    padding-left: clamp(12px, 3vw, 20px) !important;
+    padding-right: clamp(12px, 3vw, 20px) !important;
+  }
+
+  /* Stats and number displays */
+  [style*="fontSize: 32"] {
+    font-size: 24px !important;
+  }
+
+  [style*="fontSize: 56"] {
+    font-size: 32px !important;
+  }
+
+  [style*="fontSize: 80"] {
+    font-size: 48px !important;
+  }
+}
+
+/* ============================================
+   SMALL MOBILE (max-width: 480px)
+   ============================================ */
+@media (max-width: 480px) {
+  /* Further reduce padding */
+  header, footer, section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Typography even smaller */
+  h1 {
+    font-size: 22px !important;
+  }
+
+  h2 {
+    font-size: 18px !important;
+  }
+
+  h3 {
+    font-size: 16px !important;
+  }
+
+  /* Button font size */
+  button {
+    font-size: 13px !important;
+    padding: 10px 16px !important;
+  }
+
+  /* Modals take more screen space */
+  [style*="position: fixed"][style*="inset: 0"] > div {
+    max-width: calc(100% - 24px) !important;
+    border-radius: 16px !important;
+    padding: 24px 20px !important;
+  }
+
+  /* Cards reduce padding */
+  [style*="padding: 44px"] {
+    padding: 24px 20px !important;
+  }
+
+  [style*="padding: 32px"] {
+    padding: 20px 16px !important;
+  }
+
+  /* Workspace panels narrower */
+  .workspace-member-panel,
+  .workspace-property-panel {
+    width: 240px !important;
+  }
+
+  /* Hide text in small buttons */
+  .btn-text-hide-mobile {
+    display: none !important;
+  }
+
+  /* Stack absolutely everything */
+  [style*="display: flex"][style*="flexDirection"][style*="row"] {
+    flex-direction: column !important;
+  }
+}
+
+/* ============================================
+   MOBILE UTILITIES
+   ============================================ */
+
+/* Safe areas for notched phones */
+@supports (padding: env(safe-area-inset-left)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+  button,
+  a,
+  [role="button"],
+  [onclick] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Smooth scrolling */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Mobile-specific hover states (prevent sticky hover) */
+@media (hover: none) and (pointer: coarse) {
+  *:hover {
+    /* Reset hover styles on touch devices */
+  }
+}
+
+/* ============================================
+   WORKSPACE MOBILE OVERRIDES
+   ============================================ */
+@media (max-width: 768px) {
+  /* Formation panel should scroll horizontally */
+  [style*="overflowX: \"auto\""] {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Stage canvas controls */
+  .stage-controls {
+    bottom: 12px !important;
+    right: 12px !important;
+  }
+
+  .stage-controls button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+/* ============================================
+   FIX SPECIFIC LAYOUT ISSUES
+   ============================================ */
+
+/* Prevent flex items from shrinking */
+[style*="flexShrink: 0"] {
+  flex-shrink: 0;
+}
+
+/* Ensure images don't break layout */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* SVG responsiveness */
+svg {
+  max-width: 100%;
+}
+
+/* Fix overflow issues */
+[style*="overflow: hidden"] {
+  overflow: hidden;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+  .no-print,
+  .sidebar,
+  .mobile-menu-btn,
+  header,
+  footer {
+    display: none !important;
+  }
+}
