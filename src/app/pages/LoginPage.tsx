@@ -1,23 +1,32 @@
+import { supabase } from "../lib/supabase";
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useApp();
-  const [email, setEmail] = useState("minj@dph.kr");
+  const { login, loginWithGoogle } = useApp();
+
+  const [email, setEmail] = useState("minjun@dph.kr");
   const [password, setPassword] = useState("password");
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email || !password) { setError("이메일과 비밀번호를 입력해주세요."); return; }
-    const ok = login(email, password);
-    if (ok) navigate("/dashboard");
-    else setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+  async function handleSubmit(e: React.FormEvent) {
+   e.preventDefault();
+
+    const success = await login(email, password);
+
+    if (success) {
+      navigate("/");
+    } else {
+      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+    }
   }
+  async function handleGoogleLogin() {
+  await loginWithGoogle();
+}
 
   return (
     <div className="auth-card" style={{ width: "100%", maxWidth: 440, background: "white", borderRadius: 24, padding: "44px 44px 36px", boxShadow: "0 8px 40px rgba(108,58,237,0.12)", border: "1px solid #EDE9FE" }}>
@@ -68,15 +77,34 @@ export function LoginPage() {
           로그인
         </button>
 
+        <button
+         type="button"
+         onClick={handleGoogleLogin}
+        >
+         구글로 로그인
+        </button>
+
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ flex: 1, height: 1, background: "#E5E7EB" }} />
           <span style={{ fontSize: 12, color: "#9CA3AF" }}>또는</span>
           <div style={{ flex: 1, height: 1, background: "#E5E7EB" }} />
         </div>
 
-        <button
+         <button
           type="button"
-          onClick={() => { login("google@dph.kr", "google"); navigate("/dashboard"); }}
+          onClick={async () => {
+            const { error } = await supabase.auth.signInWithOAuth({
+              provider : "google",
+              options: {
+                redirectTo: window.location.origin
+              },
+            })
+
+            if (error){
+              console.error(error);
+              alert("구글 로그인에 실패했습니다.");
+            }
+          }}
           style={{ padding: "12px 14px", borderRadius: 12, background: "white", border: "1.5px solid #E5E7EB", fontSize: 14, fontWeight: 600, color: "#374151", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -88,7 +116,7 @@ export function LoginPage() {
           Google 계정으로 로그인
         </button>
       </form>
-
+  
       <p style={{ textAlign: "center", fontSize: 14, color: "#6B7280", marginTop: 24 }}>
         계정이 없으신가요?{" "}
         <button onClick={() => navigate("/register")} style={{ color: "#6C3AED", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}>회원가입</button>

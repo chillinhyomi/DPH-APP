@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { supabase } from "../lib/supabase";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 // ─── Types (Firebase-ready structures) ───────────────────────────────────────
 
@@ -433,8 +434,9 @@ interface AppContextType {
   notices: Notice[];
   scheduleEvents: ScheduleEvent[];
   isAuthenticated: boolean;
-  login: (email: string, password: string) => boolean;
-  register: (name: string, email: string, password: string) => void;
+  login: (email: string, password: string) => Promise<boolean>;
+  loginWithGoogle: () => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
   createProject: (data: Omit<Project, "id" | "ownerId" | "createdAt" | "updatedAt" | "inviteCode" | "memberCount" | "formationCount" | "isFavorite">) => Project;
@@ -461,25 +463,92 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(MOCK_USER);
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
-  const [members, setMembers] = useState<Record<string, Member[]>>(MOCK_MEMBERS);
-  const [formations, setFormations] = useState<Record<string, Formation[]>>(MOCK_FORMATIONS);
-  const [musicFiles, setMusicFiles] = useState<Record<string, MusicFile | null>>({});
-  const [notices, setNotices] = useState<Notice[]>(MOCK_NOTICES);
-  const [scheduleEvents, setScheduleEvents] = useState<ScheduleEvent[]>(MOCK_SCHEDULE);
-  const [qnaPosts, setQnaPosts] = useState<QnAPost[]>(MOCK_QNA_POSTS);
 
-  function login(email: string, _password: string): boolean {
-    if (email) {
-      setCurrentUser(MOCK_USER);
-      return true;
-    }
+   const API_BASE_URL = "http://localhost:8000";
+  async function fetchProjects() {
+  const res = await fetch(`${API_BASE_URL}/projects`);
+  const data = await res.json();
+  setProjects(data);
+}
+
+async function fetchNotices() {
+  const res = await fetch(`${API_BASE_URL}/notices`);
+  const data = await res.json();
+  setNotices(data);
+}
+
+async function fetchScheduleEvents() {
+  const res = await fetch(`${API_BASE_URL}/schedule-events`);
+  const data = await res.json();
+  setScheduleEvents(data);
+}
+
+async function fetchQnaPosts() {
+  const res = await fetch(`${API_BASE_URL}/qna-posts`);
+  const data = await res.json();
+  setQnaPosts(data);
+}
+useEffect(() => {
+  fetchProjects();
+  fetchNotices();
+  fetchScheduleEvents();
+  fetchQnaPosts();
+}, []);
+
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [members, setMembers] = useState<Record<string, Member[]>>({});
+  const [formations, setFormations] = useState<Record<string, Formation[]>>({});
+  const [musicFiles, setMusicFiles] = useState<Record<string, MusicFile | null>>({});
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [scheduleEvents, setScheduleEvents] = useState<ScheduleEvent[]>([]);
+  const [qnaPosts, setQnaPosts] = useState<QnAPost[]>([]);
+
+  async function login(email: string, password: string): Promise<boolean> {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error || !data.user) {
+    console.error("로그인 실패:", error?.message);
     return false;
   }
 
-  function register(name: string, email: string, _password: string) {
-    setCurrentUser({ uid: "user-new", name, email, avatarColor: "#6C3AED" });
+  setCurrentUser({
+    uid: data.user.id,
+    name:
+      data.user.user_metadata?.full_name ||
+      data.user.user_metadata?.name ||
+      data.user.email?.split("@")[0] ||
+      "사용자",
+    email: data.user.email || "",
+    avatarColor: "#6C3AED",
+  });
+
+  return true;
+}
+    async function loginWithGoogle(): Promise<void> {
+  await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: window.location.origin,
+    },
+  });
+}
+
+  async function register(name: string, email: string, password: string) {
+    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const data = await res.json();
+    if (data.user) {
+      setCurrentUser(data.user);
+    }
   }
 
   function logout() {
@@ -679,7 +748,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ currentUser, projects, members, formations, musicFiles, notices, scheduleEvents, qnaPosts, isAuthenticated: !!currentUser, login, register, logout, updateUser, createProject, joinProject, updateFormations, updateMembers, uploadMusic, removeMusic, renameProject, deleteProject, toggleFavorite, addNotice, addComment, addScheduleEvent, createQnAPost, updateQnAPost, deleteQnAPost, addQnAReply, incrementQnAViews, DANCER_COLORS }}>
+    <AppContext.Provider value={{ currentUser, projects, members, formations, musicFiles, notices, scheduleEvents, qnaPosts, isAuthenticated: !!currentUser, login, register, logout, updateUser, createProject, joinProject, updateFormations, updateMembers, uploadMusic, removeMusic, renameProject, deleteProject, toggleFavorite, addNotice, addComment, addScheduleEvent, createQnAPost, updateQnAPost, deleteQnAPost, addQnAReply, incrementQnAViews, loginWithGoogle, DANCER_COLORS }}>
       {children}
     </AppContext.Provider>
   );
