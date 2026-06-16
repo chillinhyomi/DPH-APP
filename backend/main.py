@@ -16,6 +16,7 @@ app.add_middleware(
         "http://localhost:5173",
         "http://localhost:5176",
         "https://famous-zabaione-18c732.netlify.app",
+        "https://illustrious-stardust-eb1b61.netlify.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
