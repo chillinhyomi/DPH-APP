@@ -610,6 +610,7 @@ useEffect(() => {
         redirectTo: window.location.origin,
     },
   });
+  
   if (error) {
     console.error("구글 로그인 실패:", error.message);
   }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { Plus, Search, Users, Calendar, MoreHorizontal, X, Music2, Lock, ChevronRight, Edit2, Share2, Star, Trash2 } from "lucide-react";
+import { Plus, Search, Users, Calendar, MoreHorizontal, X, Music2, Lock, ChevronRight, Edit2, Share2, Star, Trash2, FolderOpen } from "lucide-react";
 import { useApp, Project } from "../context/AppContext";
 import { MobilePage, PageHeader, PageContent } from "../components/MobilePage";
 
