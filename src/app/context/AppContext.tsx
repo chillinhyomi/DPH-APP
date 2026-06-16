@@ -550,6 +550,10 @@ async function fetchQnaPosts() {
   supabase.auth.getSession().then(({ data }) => {
     console.log("초기 세션=", data.session);
     setUserFromSession(data.session);
+    // OAuth 콜백 후 세션이 이미 있으면 projects로 이동 (SIGNED_IN 이벤트 타이밍 보완)
+    if (data.session?.user && window.location.pathname === "/") {
+      window.location.href = "/projects";
+    }
   });
 
   const {

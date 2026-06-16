@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router";
 import {
-  Home, FolderOpen, Layers, GitBranch, User,
+  Home, Folder, Layers, GitBranch, User,
   Bell, Menu, X
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
@@ -10,7 +10,7 @@ import { useTheme } from "../context/ThemeContext";
 // Bottom navigation - primary navigation
 const BOTTOM_NAV_ITEMS = [
   { path: "/home", icon: Home, label: "홈" },
-  { path: "/projects", icon: FolderOpen, label: "프로젝트" },
+  { path: "/projects", icon: Folder, label: "프로젝트" },
   { path: "/formations", icon: Layers, label: "포메이션" },
   { path: "/timeline", icon: GitBranch, label: "타임라인" },
   { path: "/profile", icon: User, label: "내정보" },
