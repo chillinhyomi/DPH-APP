@@ -20,11 +20,6 @@ export function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, logout } = useApp();
-  useEffect(() => {
-  if (currentUser && location.pathname === "/login") {
-    navigate("/dashboard", { replace: true });
-  }
-}, [currentUser, location.pathname, navigate]);
   const { theme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);

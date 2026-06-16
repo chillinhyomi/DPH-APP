@@ -77,11 +77,8 @@ export function LoginPage() {
           로그인
         </button>
 
-        <button
-         type="button"
-         onClick={handleGoogleLogin}
-        >
-         구글로 로그인
+        <button onClick={handleGoogleLogin}>
+          Google로 로그인
         </button>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
